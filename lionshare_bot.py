@@ -40,8 +40,9 @@ class BoilerPlate:
         reply_markup = json.dumps({'inline_keyboard': reply_markup})
         fieldss = {'chat_id': chat_id, 'text': text, 'parse_mode': 'MarkdownV2', 'reply_markup': reply_markup, 'disable_web_page_preview':disable_web_page_preview}
         function = 'sendMessage'
-        send = requests.post(self.api_url + function, fieldss).json()
-        return send 
+        send = requests.post(self.api_url + function, fieldss)
+        #print(send.json)
+        return send.json()
 
     def send_photo(self, chat_id, photo):
         fieldss = {'chat_id':chat_id, 'photo':photo}
@@ -140,24 +141,44 @@ def starter():
 def bot_message_handler(current_updates, update_id, message_id, sender_id, group_id, dict_checker, cur, callback_data=0, callback=False):
     try:
         if callback == True:
-            if callback_data == 'English' or callback_data == 'Hindi':
+            print(callback_data)
+            if callback_data == 'English' or callback_data == 'Hindi' or callback_data == 'Spanish':
                 all_texts = grab_data.lang(callback_data, cur)
                 all_buttons = grab_data.buttons(callback_data, cur)
-                for i in range(len(all_texts)-1):
+                for i in range(len(all_texts)):
                     texts[str(i)] = all_texts[i]
-                for i in range(len(all_buttons)-1):
+                for i in range(len(all_buttons)):
                     buttons[str(i)] = all_buttons[i]
-                bot.send_message_two(sender_id, texts['0'], [[(buttons['0']), (buttons['1'])], [(buttons['2'])]])
+                bot.send_message_two(sender_id, texts['0'], [[(buttons['0'])], [(buttons['1'])], [(buttons['3'])], [(buttons['2'])]])
                 bot.get_updates(offset = update_id+1)
+
+            if callback_data == 'Mobile Regi':
+                button1 = buttons['6']
+                button2 = buttons['7']
+                bot.edit_message_two(group_id, message_id, (texts['1']), [[{'text':f'{button1}', 'callback_data':'No Wallet'}],
+                                                                        [{'text':f'{button2}', 'callback_data':'Have Wallet'}]])
+                bot.get_updates(offset = update_id+1)
+            
+            if callback_data == 'PC Regi':
+                
         else:
             text = current_updates['message']['text']
             print(text)
-            if text == '/start':
+            if text == '/start' or text == 'start':
                 bot.send_message_four(sender_id, 'Select a Language', [[{'text':'English', 'callback_data':'English'}],
-                                                                    [{'text':'Hindi', 'callback_data':'Hindi'}]])
+                                                                    [{'text':'Hindi', 'callback_data':'Hindi'}],
+                                                                    [{'text':'Spanish', 'callback_data':'Spanish'}]])
                 bot.get_updates(offset = update_id+1)
-            
-    except:
+
+            if text == buttons['0']:
+                button1 = buttons['4']
+                button2 = buttons['5']
+                bot.send_message_four(sender_id, (texts['1']), [[{'text':f'{button1}', 'callback_data':'Mobile Regi'}],
+                                                            [{'text':f'{button2}', 'callback_data':'PC Regi'}]])
+                bot.get_updates(offset = update_id+1)
+
+    except Exception as e:
+        print(e)
         bot.get_updates(offset = update_id+1)
         pass
 
