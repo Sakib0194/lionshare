@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import requests, json, random, string, time, datetime, requests, mysql.connector
+import requests, json, random, string, time, datetime, requests, mysql.connector, sys
 import grab_data
 
 class BoilerPlate:
@@ -87,8 +87,7 @@ class BoilerPlate:
         #print(send.json())
         return send
 
-details = input()
-details = details.split(' ')
+details = sys.argv[1:]
 conn = mysql.connector.connect(host=details[0],user=details[1],database=details[2],password=details[3], autocommit=True)
 cur = conn.cursor()
 
