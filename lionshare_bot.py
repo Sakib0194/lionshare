@@ -87,12 +87,13 @@ class BoilerPlate:
         #print(send.json())
         return send
 
-#token = '1097474969:AAFjro39pNaKqdrWy6bZIppX1ZzbM_B6RyY'
-token = '1321576394:AAHS_jTKZgKrkPNx7efG58FHvFUY2upuDHs'
-offset = 0
-
-conn = mysql.connector.connect(host='5.230.70.221',user='sakib',database='lionshare',password='S*cAUOpIJ3Zy@4Pud7#', autocommit=True)
+details = input()
+details = details.split(' ')
+conn = mysql.connector.connect(host=details[0],user=details[1],database=details[2],password=details[3], autocommit=True)
 cur = conn.cursor()
+
+token = grab_data.api(cur)
+offset = 0
 
 texts = {}
 buttons = {}
@@ -106,7 +107,7 @@ def starter():
             if conn.is_connected() == True:
                 pass
             else:
-                conn = mysql.connector.connect(host='62.77.159.42',user='sakib3',database='bitbot',password='@&G6hdM@EZJKQu010au*jpIjs7EsB', autocommit=True)
+                conn = mysql.connector.connect(host=details[0],user=details[1],database=details[2],password=details[3], autocommit=True)
                 cur = conn.cursor()
             all_updates = bot.get_updates(offset)
             for current_updates in all_updates:
