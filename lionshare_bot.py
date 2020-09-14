@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-#find me at t.me/Sakib0194 if you are looking for a bot
+#find me at t.me/Sakib0194 if you are looking to create a bot
 import requests, json, random, string, time, datetime, requests, mysql.connector, sys
 import grab_data
 
@@ -42,7 +42,8 @@ class BoilerPlate:
         fieldss = {'chat_id': chat_id, 'text': text, 'parse_mode': 'MarkdownV2', 'reply_markup': reply_markup, 'disable_web_page_preview':disable_web_page_preview}
         function = 'sendMessage'
         send = requests.post(self.api_url + function, fieldss)
-        #print(send.json)
+        print(send)
+        print(send.json)
         return send.json()
 
     def send_photo(self, chat_id, photo):
@@ -86,7 +87,7 @@ class BoilerPlate:
         fieldss = {'chat_id': chat_id, 'message_id': message_id, 'text': text, 'parse_mode':'MarkdownV2', 'reply_markup':reply_markup, 'disable_web_page_preview':disable_web_page_preview}
         function = 'editMessageText'
         send = requests.post(self.api_url + function, fieldss)
-        #print(send.json())
+        print(send.json())
         return send
 
 details = sys.argv[1:]
@@ -96,8 +97,16 @@ cur = conn.cursor()
 token = grab_data.api(cur)
 offset = 0
 
+current_lang = 'English'
 texts = {}
 buttons = {}
+all_te = grab_data.lang('English', cur)
+all_bu = grab_data.buttons('English', cur)
+for i in range(len(all_te)):
+    texts[str(i)] = all_te[i]
+for i in range(len(all_bu)):
+    buttons[str(i)] = all_bu[i]
+special = ['@', '=', '.', '>', '-', '(', ')','!']
 
 bot = BoilerPlate(token)
 
@@ -140,9 +149,13 @@ def starter():
             pass
 
 def bot_message_handler(current_updates, update_id, message_id, sender_id, group_id, dict_checker, cur, callback_data=0, callback=False):
+    global current_lang
     try:
         if callback == True:
             print(callback_data)
+            if callback_data == 'Nothing' or callback_data == 'Zoom Video' or callback_data == 'Promotion Video' or callback_data == 'Introduction':
+                bot.get_updates(offset = update_id+1)
+
             if callback_data == 'English' or callback_data == 'Hindi' or callback_data == 'Spanish':
                 all_texts = grab_data.lang(callback_data, cur)
                 all_buttons = grab_data.buttons(callback_data, cur)
@@ -150,18 +163,200 @@ def bot_message_handler(current_updates, update_id, message_id, sender_id, group
                     texts[str(i)] = all_texts[i]
                 for i in range(len(all_buttons)):
                     buttons[str(i)] = all_buttons[i]
+                current_lang = callback_data
                 bot.send_message_two(sender_id, texts['0'], [[(buttons['0'])], [(buttons['1'])], [(buttons['3'])], [(buttons['2'])]])
                 bot.get_updates(offset = update_id+1)
 
             if callback_data == 'Mobile Regi':
                 button1 = buttons['6']
                 button2 = buttons['7']
-                bot.edit_message_two(group_id, message_id, (texts['1']), [[{'text':f'{button1}', 'callback_data':'No Wallet'}],
-                                                                        [{'text':f'{button2}', 'callback_data':'Have Wallet'}]])
+                button3 = buttons['9']
+                bot.edit_message_two(group_id, message_id, (texts['1']), [[{'text':f'{button1}', 'callback_data':'Have Wallet'}],
+                                                                        [{'text':f'{button2}', 'callback_data':'No Wallet'}],
+                                                                        [{'text':f'{button3}', 'callback_data':'Manual'}]])
                 bot.get_updates(offset = update_id+1)
             
             if callback_data == 'PC Regi':
-                
+                button1 = buttons['8']
+                button2 = buttons['9']
+                bot.edit_message_two(group_id, message_id, (texts['1']), [[{'text':f'{button1}', 'callback_data':'Tronlink'}],
+                                                                        [{'text':f'{button2}', 'callback_data':'Manual'}]])
+                bot.get_updates(offset = update_id+1)
+
+            if callback_data == 'No Wallet':
+                message = texts['5']
+                button1 = buttons['11']
+                button2 = buttons['12']
+                button3 = buttons['13']
+                bot.send_message(sender_id, 'Photo here')
+                bot.send_message_four(sender_id, message, [[{'text':f'{button1}', 'callback_data':'Create Tron'}],
+                                                            [{'text':f'{button2}', 'callback_data':'Topping Up'}],
+                                                            [{'text':f'{button3}', 'callback_data':'Complete Regi'}]])
+                bot.get_updates(offset = update_id+1)
+
+            if callback_data == 'Create Tron':
+                message = texts['3']
+                for i in special:
+                    message = message.replace(i, f'\\{i}')
+                button1 = buttons['11']
+                button2 = buttons['12']
+                button3 = buttons['13']
+                bot.edit_message_two(group_id, message_id, message, [[{'text':f'{button1}', 'callback_data':'Create Tron'}],
+                                                            [{'text':f'{button2}', 'callback_data':'Topping Up'}],
+                                                            [{'text':f'{button3}', 'callback_data':'Complete Regi'}]])
+                bot.get_updates(offset = update_id+1)
+
+            if callback_data == 'Topping Up':
+                message = texts['4']
+                for i in special:
+                    message = message.replace(i, f'\\{i}')
+                button1 = buttons['11']
+                button2 = buttons['12']
+                button3 = buttons['13']
+                bot.send_message(sender_id, 'Video here')
+                bot.send_message_four(sender_id, message, [[{'text':f'{button1}', 'callback_data':'Create Tron'}],
+                                                            [{'text':f'{button2}', 'callback_data':'Topping Up'}],
+                                                            [{'text':f'{button3}', 'callback_data':'Complete Regi'}]])
+                bot.get_updates(offset = update_id+1)
+
+            if callback_data == 'Complete Regi':
+                message = texts['6']
+                for i in special:
+                    message = message.replace(i, f'\\{i}')
+                button1 = buttons['14']
+                bot.send_message(sender_id, 'Photo here')
+                bot.send_message_four(sender_id, message, [[{'text':f'{button1}', 'callback_data':'Finalize'}]])
+                bot.get_updates(offset = update_id+1)
+            
+            if callback_data == 'Finalize':
+                bot.edit_message(group_id, message_id, (texts['7']))
+                bot.get_updates(offset = update_id+1)
+
+            if callback_data == 'Have Wallet':
+                message = texts['6']
+                for i in special:
+                    message = message.replace(i, f'\\{i}')
+                button1 = buttons['14']
+                bot.send_message(sender_id, 'Photo here')
+                bot.send_message_four(sender_id, message, [[{'text':f'{button1}', 'callback_data':'Finalize'}]])
+                bot.get_updates(offset = update_id+1)
+
+            if callback_data == 'Manual':
+                message = texts['8']
+                for i in special:
+                    message = message.replace(i, f'\\{i}')
+                bot.edit_message(group_id, message_id, message)
+                bot.get_updates(offset = update_id+1)
+
+            if callback_data == 'Tronlink':
+                button1 = buttons['15']
+                button2 = buttons['16']
+                button3 = buttons['13']
+                bot.send_message(sender_id, 'Photo here')
+                bot.send_message_four(sender_id, (texts['5']), [[{'text':f'{button1}', 'callback_data':'Create Tronlink'}],
+                                                                [{'text':f'{button2}', 'callback_data':'Topping Up'}],
+                                                                [{'text':f'{button3}', 'callback_data':'Complete Regi'}]])
+                bot.get_updates(offset = update_id+1)
+            
+            if callback_data == 'Create Tronlink':
+                message = texts['9']
+                for i in special:
+                    message = message.replace(i, f'\\{i}')
+                button1 = buttons['15']
+                button2 = buttons['16']
+                button3 = buttons['13']
+                bot.edit_message_two(group_id, message_id, message, [[{'text':f'{button1}', 'callback_data':'Create Tronlink'}],
+                                                                [{'text':f'{button2}', 'callback_data':'Topping Up'}],
+                                                                [{'text':f'{button3}', 'callback_data':'Complete Regi'}]])
+                bot.get_updates(offset = update_id+1)
+
+            if callback_data == 'Page 1':
+                message = texts['12']
+                button1 = buttons['22']
+                button2 = buttons['23']
+                button3 = buttons['24']
+                button4 = buttons['25']
+                button5 = buttons['26']
+                button6 = buttons['27']
+                button7 = buttons['28']
+                button8 = buttons['29']
+                bot.edit_message_two(group_id, message_id, message, [[{'text':f'{button1}', 'callback_data':'Answer 13'}],
+                                                                [{'text':f'{button2}', 'callback_data':'Answer 14'}],
+                                                                [{'text':f'{button3}', 'callback_data':'Answer 15'}],
+                                                                [{'text':f'{button4}', 'callback_data':'Answer 16'}],
+                                                                [{'text':f'{button5}', 'callback_data':'Answer 17'}],
+                                                                [{'text':f'{button6}', 'callback_data':'Answer 18'}],
+                                                                [{'text':f'{button7}', 'callback_data':'Answer 19'}],
+                                                                [{'text':f'{button8}', 'callback_data':'Answer 20'}],
+                                                                [{'text':'<', 'callback_data':'Page 3'}, {'text':'Page 1', 'callback_data':'Nothing'}, {'text':'>', 'callback_data':'Page 2'}],
+                                                                [{'text':'Back', 'callback_data':'Back'}]])
+                bot.get_updates(offset = update_id+1)
+
+            if callback_data == 'Page 2':
+                message = texts['12']
+                button1 = buttons['30']
+                button2 = buttons['31']
+                button3 = buttons['32']
+                button4 = buttons['33']
+                button5 = buttons['34']
+                button6 = buttons['35']
+                button7 = buttons['36']
+                button8 = buttons['37']
+                bot.edit_message_two(group_id, message_id, message, [[{'text':f'{button1}', 'callback_data':'Answer 21'}],
+                                                                [{'text':f'{button2}', 'callback_data':'Answer 22'}],
+                                                                [{'text':f'{button3}', 'callback_data':'Answer 23'}],
+                                                                [{'text':f'{button4}', 'callback_data':'Answer 24'}],
+                                                                [{'text':f'{button5}', 'callback_data':'Answer 25'}],
+                                                                [{'text':f'{button6}', 'callback_data':'Answer 26'}],
+                                                                [{'text':f'{button7}', 'callback_data':'Answer 27'}],
+                                                                [{'text':f'{button8}', 'callback_data':'Answer 28'}],
+                                                                [{'text':'<', 'callback_data':'Page 1'}, {'text':'Page 2', 'callback_data':'Nothing'}, {'text':'>', 'callback_data':'Page 3'}],
+                                                                [{'text':'Back', 'callback_data':'Back'}]])
+                bot.get_updates(offset = update_id+1)
+
+            if callback_data == 'Page 3':
+                message = texts['12']
+                button1 = buttons['38']
+                button2 = buttons['39']
+                button3 = buttons['40']
+                button4 = buttons['41']
+                button5 = buttons['42']
+                button6 = buttons['43']
+                button7 = buttons['44']
+                button8 = buttons['45']
+                bot.edit_message_two(group_id, message_id, message, [[{'text':f'{button1}', 'callback_data':'Answer 29'}],
+                                                                [{'text':f'{button2}', 'callback_data':'Answer 30'}],
+                                                                [{'text':f'{button3}', 'callback_data':'Answer 31'}],
+                                                                [{'text':f'{button4}', 'callback_data':'Answer 32'}],
+                                                                [{'text':f'{button5}', 'callback_data':'Answer 33'}],
+                                                                [{'text':f'{button6}', 'callback_data':'Answer 34'}],
+                                                                [{'text':f'{button7}', 'callback_data':'Answer 35'}],
+                                                                [{'text':f'{button8}', 'callback_data':'Answer 36'}],
+                                                                [{'text':'<', 'callback_data':'Page 2'}, {'text':'Page 3', 'callback_data':'Nothing'}, {'text':'>', 'callback_data':'Page 1'}],
+                                                                [{'text':'Back', 'callback_data':'Back'}]])
+                bot.get_updates(offset = update_id+1)
+
+            if callback_data == 'Back':
+                button1 = buttons['10']
+                button2 = buttons['17']
+                button3 = buttons['18']
+                button4 = buttons['19']
+                button5 = buttons['20']
+                button6 = buttons['21']
+                bot.edit_message_two(group_id, message_id, texts['11'], [[{'text':f'{button2}', 'callback_data':'Introduction'}],
+                                                                [{'text':f'{button3}', 'callback_data':'Zoom Video'}],
+                                                                [{'text':f'{button4}', 'callback_data':'Promotion Video'}],
+                                                                [{'text':f'{button5}', 'callback_data':'Page 1'}],
+                                                                [{'text':f'{button6}', 'callback_data':'Nothing'}]])
+                bot.get_updates(offset = update_id+1)
+
+            if callback_data.startswith('Answer'):
+                number = callback_data.split(' ')[1]
+                reply = grab_data.faq(number, current_lang, cur)
+                for i in special:
+                    reply = reply.replace(i, f'\\{i}')
+                bot.edit_message_two(group_id, message_id, reply, [[{'text':'Back', 'callback_data':'Page 1'}]])
+                bot.get_updates(offset = update_id+1)
         else:
             text = current_updates['message']['text']
             print(text)
@@ -174,10 +369,45 @@ def bot_message_handler(current_updates, update_id, message_id, sender_id, group
             if text == buttons['0']:
                 button1 = buttons['4']
                 button2 = buttons['5']
+                button3 = buttons['10']
+                bot.send_message_two(sender_id, (texts['2']), [[button3]])
                 bot.send_message_four(sender_id, (texts['1']), [[{'text':f'{button1}', 'callback_data':'Mobile Regi'}],
                                                             [{'text':f'{button2}', 'callback_data':'PC Regi'}]])
                 bot.get_updates(offset = update_id+1)
 
+            if text == buttons['10']:
+                bot.send_message_two(sender_id, texts['0'], [[(buttons['0'])], [(buttons['1'])], [(buttons['3'])], [(buttons['2'])]])
+                bot.get_updates(offset = update_id+1)
+
+            if text == buttons['1']:
+                button1 = buttons['10']
+                button2 = buttons['17']
+                button3 = buttons['18']
+                button4 = buttons['19']
+                button5 = buttons['20']
+                button6 = buttons['21']
+                bot.send_message_two(sender_id, texts['10'], [[button1]])
+                bot.send_message_four(sender_id, texts['11'], [[{'text':f'{button2}', 'callback_data':'Introduction'}],
+                                                                [{'text':f'{button3}', 'callback_data':'Zoom Video'}],
+                                                                [{'text':f'{button4}', 'callback_data':'Promotion Video'}],
+                                                                [{'text':f'{button5}', 'callback_data':'Page 1'}],
+                                                                [{'text':f'{button6}', 'callback_data':'Nothing'}]])
+                bot.get_updates(offset = update_id+1)
+
+            if text == buttons['2']:
+                bot.send_message_three(sender_id, 'Change Language', remove_keyboard=True)
+                bot.send_message_four(sender_id, 'Select a Language', [[{'text':'English', 'callback_data':'English'}],
+                                                                    [{'text':'Hindi', 'callback_data':'Hindi'}],
+                                                                    [{'text':'Spanish', 'callback_data':'Spanish'}]])
+                bot.get_updates(offset = update_id+1)
+
+            if text == buttons['3']:
+                bot.send_message
+                bot.send_message_four(sender_id, texts['37'], [[{'text':'Telegram', 'url':'https://www.google.com/'}],
+                                                                [{'text':'YouTube', 'url':'https://www.google.com/'}]])
+                bot.get_updates(offset = update_id+1)
+
+    
     except Exception as e:
         print(e)
         bot.get_updates(offset = update_id+1)
