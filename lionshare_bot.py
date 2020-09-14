@@ -41,7 +41,7 @@ class BoilerPlate:
         fieldss = {'chat_id': chat_id, 'text': text, 'parse_mode': 'MarkdownV2', 'reply_markup': reply_markup, 'disable_web_page_preview':disable_web_page_preview}
         function = 'sendMessage'
         send = requests.post(self.api_url + function, fieldss)
-        #print(send.json)
+        print(send.json)
         return send.json()
 
     def send_photo(self, chat_id, photo):
@@ -85,7 +85,7 @@ class BoilerPlate:
         fieldss = {'chat_id': chat_id, 'message_id': message_id, 'text': text, 'parse_mode':'MarkdownV2', 'reply_markup':reply_markup, 'disable_web_page_preview':disable_web_page_preview}
         function = 'editMessageText'
         send = requests.post(self.api_url + function, fieldss)
-        #print(send.json())
+        print(send.json())
         return send
 
 details = sys.argv[1:]
@@ -97,6 +97,13 @@ offset = 0
 
 texts = {}
 buttons = {}
+all_te = grab_data.lang('English', cur)
+all_bu = grab_data.buttons('English', cur)
+for i in range(len(all_te)):
+    texts[str(i)] = all_te[i]
+for i in range(len(all_bu)):
+    buttons[str(i)] = all_bu[i]
+special = ['@', '=', '.', '>', '-', '(', ')']
 
 bot = BoilerPlate(token)
 
@@ -155,12 +162,106 @@ def bot_message_handler(current_updates, update_id, message_id, sender_id, group
             if callback_data == 'Mobile Regi':
                 button1 = buttons['6']
                 button2 = buttons['7']
-                bot.edit_message_two(group_id, message_id, (texts['1']), [[{'text':f'{button1}', 'callback_data':'No Wallet'}],
-                                                                        [{'text':f'{button2}', 'callback_data':'Have Wallet'}]])
+                button3 = buttons['9']
+                bot.edit_message_two(group_id, message_id, (texts['1']), [[{'text':f'{button1}', 'callback_data':'Have Wallet'}],
+                                                                        [{'text':f'{button2}', 'callback_data':'No Wallet'}],
+                                                                        [{'text':f'{button3}', 'callback_data':'Manual'}]])
                 bot.get_updates(offset = update_id+1)
             
             if callback_data == 'PC Regi':
-                
+                button1 = buttons['8']
+                button2 = buttons['9']
+                bot.edit_message_two(group_id, message_id, (texts['1']), [[{'text':f'{button1}', 'callback_data':'Tronlink'}],
+                                                                        [{'text':f'{button2}', 'callback_data':'Manual'}]])
+                bot.get_updates(offset = update_id+1)
+
+            if callback_data == 'No Wallet':
+                message = texts['5']
+                button1 = buttons['11']
+                button2 = buttons['12']
+                button3 = buttons['13']
+                bot.send_message(sender_id, 'Photo here')
+                bot.send_message_four(sender_id, message, [[{'text':f'{button1}', 'callback_data':'Create Tron'}],
+                                                            [{'text':f'{button2}', 'callback_data':'Topping Up'}],
+                                                            [{'text':f'{button3}', 'callback_data':'Complete Regi'}]])
+                bot.get_updates(offset = update_id+1)
+
+            if callback_data == 'Create Tron':
+                message = texts['3']
+                for i in special:
+                    message = message.replace(i, f'\\{i}')
+                button1 = buttons['11']
+                button2 = buttons['12']
+                button3 = buttons['13']
+                bot.edit_message_two(group_id, message_id, message, [[{'text':f'{button1}', 'callback_data':'Create Tron'}],
+                                                            [{'text':f'{button2}', 'callback_data':'Topping Up'}],
+                                                            [{'text':f'{button3}', 'callback_data':'Complete Regi'}]])
+                bot.get_updates(offset = update_id+1)
+
+            if callback_data == 'Topping Up':
+                message = texts['4']
+                for i in special:
+                    message = message.replace(i, f'\\{i}')
+                button1 = buttons['11']
+                button2 = buttons['12']
+                button3 = buttons['13']
+                bot.send_message(sender_id, 'Video here')
+                bot.send_message_four(sender_id, message, [[{'text':f'{button1}', 'callback_data':'Create Tron'}],
+                                                            [{'text':f'{button2}', 'callback_data':'Topping Up'}],
+                                                            [{'text':f'{button3}', 'callback_data':'Complete Regi'}]])
+                bot.get_updates(offset = update_id+1)
+
+            if callback_data == 'Complete Regi':
+                message = texts['6']
+                for i in special:
+                    message = message.replace(i, f'\\{i}')
+                button1 = buttons['14']
+                bot.send_message(sender_id, 'Photo here')
+                bot.send_message_four(sender_id, message, [[{'text':f'{button1}', 'callback_data':'Finalize'}]])
+                bot.get_updates(offset = update_id+1)
+            
+            if callback_data == 'Finalize':
+                bot.edit_message(group_id, message_id, (texts['7']))
+                bot.get_updates(offset = update_id+1)
+
+            if callback_data == 'Have Wallet':
+                message = texts['6']
+                for i in special:
+                    message = message.replace(i, f'\\{i}')
+                button1 = buttons['14']
+                bot.send_message(sender_id, 'Photo here')
+                bot.send_message_four(sender_id, message, [[{'text':f'{button1}', 'callback_data':'Finalize'}]])
+                bot.get_updates(offset = update_id+1)
+
+            if callback_data == 'Manual':
+                message = texts['8']
+                for i in special:
+                    message = message.replace(i, f'\\{i}')
+                bot.edit_message(group_id, message_id, message)
+                bot.get_updates(offset = update_id+1)
+
+            if callback_data == 'Tronlink':
+                button1 = buttons['15']
+                button2 = buttons['16']
+                button3 = buttons['13']
+                bot.send_message(sender_id, 'Photo here')
+                bot.send_message_four(sender_id, (texts['5']), [[{'text':f'{button1}', 'callback_data':'Create Tronlink'}],
+                                                                [{'text':f'{button2}', 'callback_data':'Topping Up'}],
+                                                                [{'text':f'{button3}', 'callback_data':'Complete Regi'}]])
+                bot.get_updates(offset = update_id+1)
+            
+            if callback_data == 'Create Tronlink':
+                message = texts['9']
+                for i in special:
+                    message = message.replace(i, f'\\{i}')
+                button1 = buttons['15']
+                button2 = buttons['16']
+                button3 = buttons['13']
+                bot.edit_message_two(group_id, message_id, message, [[{'text':f'{button1}', 'callback_data':'Create Tronlink'}],
+                                                                [{'text':f'{button2}', 'callback_data':'Topping Up'}],
+                                                                [{'text':f'{button3}', 'callback_data':'Complete Regi'}]])
+                bot.get_updates(offset = update_id+1)
+
         else:
             text = current_updates['message']['text']
             print(text)
@@ -173,8 +274,14 @@ def bot_message_handler(current_updates, update_id, message_id, sender_id, group
             if text == buttons['0']:
                 button1 = buttons['4']
                 button2 = buttons['5']
+                button3 = buttons['10']
+                bot.send_message_two(sender_id, (texts['2']), [[button3]])
                 bot.send_message_four(sender_id, (texts['1']), [[{'text':f'{button1}', 'callback_data':'Mobile Regi'}],
                                                             [{'text':f'{button2}', 'callback_data':'PC Regi'}]])
+                bot.get_updates(offset = update_id+1)
+
+            if text == buttons['10']:
+                bot.send_message_two(sender_id, texts['0'], [[(buttons['0'])], [(buttons['1'])], [(buttons['3'])], [(buttons['2'])]])
                 bot.get_updates(offset = update_id+1)
 
     except Exception as e:
