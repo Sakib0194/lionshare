@@ -15,7 +15,7 @@ def buttons(lang, cur):
     return unique
 
 def api(cur):
-    cur.execute(f"SELECT API FROM API")
+    cur.execute(f"SELECT Details FROM specials where code = 'API'")
     rows = cur.fetchall()
     return rows[0][0]
 
@@ -26,3 +26,11 @@ def faq(number, lang, cur):
     for i in rows:
         full_texts = i[0]
     return full_texts
+
+def links(code, cur):
+    cur.execute(f"SELECT Details FROM specials where code = '{code}'")
+    rows = cur.fetchall()
+    unique = [] 
+    for i in rows:
+        unique.append(i[0])
+    return unique
