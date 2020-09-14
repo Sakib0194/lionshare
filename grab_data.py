@@ -34,3 +34,15 @@ def links(code, cur):
     for i in rows:
         unique.append(i[0])
     return unique
+
+def all_users(cur):
+    cur.execute(f"SELECT Telegram_ID FROM users")
+    rows = cur.fetchall()
+    unique = [] 
+    for i in rows:
+        unique.append(i[0])
+    return unique
+
+def add_users(id_num, cur):
+    sql = f"INSERT INTO users(Telegram_ID) VALUES('{id_num}')"
+    cur.execute(sql)

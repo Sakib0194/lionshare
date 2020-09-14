@@ -42,8 +42,8 @@ class BoilerPlate:
         fieldss = {'chat_id': chat_id, 'text': text, 'parse_mode': 'MarkdownV2', 'reply_markup': reply_markup, 'disable_web_page_preview':disable_web_page_preview}
         function = 'sendMessage'
         send = requests.post(self.api_url + function, fieldss)
-        print(send)
-        print(send.json)
+        #print(send)
+        #print(send.json)
         return send.json()
 
     def send_photo(self, chat_id, photo):
@@ -57,14 +57,14 @@ class BoilerPlate:
         fieldss = {'chat_id':chat_id, 'video':video}
         function = 'sendVideo'
         send = requests.post(self.api_url + function, fieldss)
-        print(send.json())
+        #print(send.json())
         return send 
     
     def send_document(self, chat_id, document):
         fieldss = {'chat_id':chat_id, 'document':document}
         function = 'sendDocument'
         send = requests.post(self.api_url + function, fieldss)
-        print(send.json())
+        #print(send.json())
         return send 
     
     def InLineAnswer(self, inline_query_id, results):                   #FOR MANAGING INLINE REPLIES
@@ -101,7 +101,7 @@ class BoilerPlate:
         fieldss = {'chat_id': chat_id, 'message_id': message_id, 'text': text, 'parse_mode':'MarkdownV2', 'reply_markup':reply_markup, 'disable_web_page_preview':disable_web_page_preview}
         function = 'editMessageText'
         send = requests.post(self.api_url + function, fieldss)
-        print(send.json())
+        #print(send.json())
         return send
 
 details = sys.argv[1:]
@@ -135,7 +135,7 @@ def starter():
                 cur = conn.cursor()
             all_updates = bot.get_updates(offset)
             for current_updates in all_updates:
-                print(current_updates)
+                #print(current_updates)
                 update_id = current_updates['update_id']
                 #bot.get_updates(offset = update_id+1)
                 try:
@@ -299,6 +299,66 @@ def bot_message_handler(current_updates, update_id, message_id, sender_id, group
                                                                 [{'text':f'{button3}', 'callback_data':'Complete Regi PC'}]])
                 bot.get_updates(offset = update_id+1)
 
+            if callback_data == 'Intro Video':
+                video = grab_data.links('video 2', cur)
+                bot.send_video(sender_id, video)
+                bot.get_updates(offset = update_id+1)
+
+            elif callback_data == 'Zoom Video':
+                link1 = grab_data.links('video zoom', cur)
+                link2 = grab_data.links('video zoom 2', cur)
+                bot.send_video(sender_id, link1)
+                bot.send_video(sender_id, link2)
+                bot.get_updates(offset = update_id+1)
+
+            elif callback_data == 'Introduction':
+                button1 = buttons['47']
+                button2 = buttons['48']
+                bot.edit_message_two(group_id, message_id, texts['38'], [[{'text':f'{button1}', 'callback_data':'Intro Eng'}],
+                                                                        [{'text':f'{button2}', 'callback_data':'Intro Afr'}],
+                                                                        [{'text':'Back', 'callback_data':'Back'}]])
+                bot.get_updates(offset = update_id+1)
+
+            elif callback_data == 'Promotion Video':
+                button1 = buttons['49']
+                button2 = buttons['50']
+                button3 = buttons['51']
+                bot.edit_message_two(group_id, message_id, texts['39'], [[{'text':f'{button1}', 'callback_data':'Promo Vid'}],
+                                                                        [{'text':f'{button2}', 'callback_data':'Promo Pic'}],
+                                                                        [{'text':f'{button3}', 'callback_data':'Stickers'}],
+                                                                        [{'text':'Back', 'callback_data':'Back'}]])
+                bot.get_updates(offset = update_id+1)
+
+            elif callback_data == 'Promo Vid':
+                all_links = []
+                for i in range(3,11):
+                    video = grab_data.links(f'video {i}', cur)
+                    all_links.append(video[0])
+                print(all_links)
+                for i in all_links:
+                    bot.send_video(sender_id, i)
+
+                bot.get_updates(offset = update_id+1)
+            
+            elif callback_data == 'Promo Pic':
+                #video = grab_data.links('video 3', cur)
+                #bot.send_video(sender_id, video)
+                bot.get_updates(offset = update_id+1)
+            
+            elif callback_data == 'Stickers':
+                #video = grab_data.links('video 3', cur)
+                #bot.send_video(sender_id, video)
+                bot.get_updates(offset = update_id+1)
+
+            elif callback_data == 'Intro Eng':
+                document = grab_data.links('document 1', cur)
+                bot.send_document(sender_id, document)
+                bot.get_updates(offset = update_id+1)
+            
+            elif callback_data == 'Intro Afr':
+                document = grab_data.links('document 2', cur)
+                bot.send_document(sender_id, document)
+                bot.get_updates(offset = update_id+1)
 
             if callback_data == 'Page 1':
                 message = texts['12']
@@ -382,67 +442,6 @@ def bot_message_handler(current_updates, update_id, message_id, sender_id, group
                                                                 [{'text':f'{button6}', 'callback_data':'Nothing'}]])
                 bot.get_updates(offset = update_id+1)
 
-            if callback_data == 'Intro Video':
-                video = grab_data.links('video 2', cur)
-                bot.send_video(sender_id, video)
-                bot.get_updates(offset = update_id+1)
-
-            elif callback_data == 'Zoom Video':
-                link1 = grab_data.links('video zoom', cur)
-                link2 = grab_data.links('video zoom 2', cur)
-                bot.send_video(sender_id, link1)
-                bot.send_video(sender_id, link2)
-                bot.get_updates(offset = update_id+1)
-
-            elif callback_data == 'Introduction':
-                button1 = buttons['47']
-                button2 = buttons['48']
-                bot.edit_message_two(group_id, message_id, texts['38'], [[{'text':f'{button1}', 'callback_data':'Intro Eng'}],
-                                                                        [{'text':f'{button2}', 'callback_data':'Intro Afr'}],
-                                                                        [{'text':'Back', 'callback_data':'Back'}]])
-                bot.get_updates(offset = update_id+1)
-
-            elif callback_data == 'Promotion Video':
-                button1 = buttons['49']
-                button2 = buttons['50']
-                button3 = buttons['51']
-                bot.edit_message_two(group_id, message_id, texts['39'], [[{'text':f'{button1}', 'callback_data':'Promo Vid'}],
-                                                                        [{'text':f'{button2}', 'callback_data':'Promo Pic'}],
-                                                                        [{'text':f'{button3}', 'callback_data':'Stickers'}],
-                                                                        [{'text':'Back', 'callback_data':'Back'}]])
-                bot.get_updates(offset = update_id+1)
-
-            elif callback_data == 'Promo Vid':
-                all_links = []
-                for i in range(3,11):
-                    video = grab_data.links(f'video {i}', cur)
-                    all_links.append(video[0])
-                print(all_links)
-                for i in all_links:
-                    bot.send_video(sender_id, i)
-
-                bot.get_updates(offset = update_id+1)
-            
-            elif callback_data == 'Promo Pic':
-                #video = grab_data.links('video 3', cur)
-                #bot.send_video(sender_id, video)
-                bot.get_updates(offset = update_id+1)
-            
-            elif callback_data == 'Stickers':
-                #video = grab_data.links('video 3', cur)
-                #bot.send_video(sender_id, video)
-                bot.get_updates(offset = update_id+1)
-
-            elif callback_data == 'Intro Eng':
-                document = grab_data.links('document 1', cur)
-                bot.send_document(sender_id, document)
-                bot.get_updates(offset = update_id+1)
-            
-            elif callback_data == 'Intro Afr':
-                document = grab_data.links('document 2', cur)
-                bot.send_document(sender_id, document)
-                bot.get_updates(offset = update_id+1)
-
             if callback_data.startswith('Answer'):
                 number = callback_data.split(' ')[1]
                 reply = grab_data.faq(number, current_lang, cur)
@@ -457,6 +456,9 @@ def bot_message_handler(current_updates, update_id, message_id, sender_id, group
                 bot.send_message_four(sender_id, 'Select a Language', [[{'text':'English', 'callback_data':'English'}],
                                                                     [{'text':'Hindi', 'callback_data':'Hindi'}],
                                                                     [{'text':'Spanish', 'callback_data':'Spanish'}]])
+                users = grab_data.all_users(cur)
+                if sender_id not in users:
+                    grab_data.add_users(sender_id, cur)
                 bot.get_updates(offset = update_id+1)
 
             if text == buttons['10']:
