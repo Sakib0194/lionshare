@@ -19,6 +19,11 @@ def api(cur):
     rows = cur.fetchall()
     return rows[0][0]
 
+def api_two(cur):
+    cur.execute(f"SELECT Details FROM specials where code = 'API 2'")
+    rows = cur.fetchall()
+    return rows[0][0]
+
 def faq(number, lang, cur):
     cur.execute(f"SELECT {lang} FROM texts_lang WHERE Message_ID = '{int(number)+1}'")
     rows = cur.fetchall()
