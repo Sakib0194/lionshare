@@ -134,6 +134,7 @@ for h in all_lang:
     texts[h] = te
     buttons[h] = bu
 special = ['@', '=', '.', '>', '-', '(', ')','!']
+send_feedback = []
 
 bot = BoilerPlate(token)
 
@@ -146,6 +147,17 @@ def starter():
             else:
                 conn = mysql.connector.connect(host=details[0],user=details[1],database=details[2],password=details[3], autocommit=True)
                 cur = conn.cursor()
+            pending_reply = grab_data.feedback_sent(cur)
+            if pending_reply == []:
+                pass
+            else:
+                for i in pending_reply:
+                    data = grab_data.sent_reply(i, cur)
+                    message = data[1]
+                    for u in special:
+                        message = message.replace(u, f'\\{u}')
+                    bot.send_message(data[0], f'Reply to Feedback: {message}')
+                    grab_data.update_sent(i, cur)
             all_updates = bot.get_updates(offset)
             for current_updates in all_updates:
                 #print(current_updates)
@@ -189,13 +201,14 @@ def bot_message_handler(current_updates, update_id, message_id, sender_id, group
                 bot.get_updates(offset = update_id+1)
 
             if callback_data == 'Promotion Video':
+                button4 = buttons[cu_lang[sender_id]]['53']
                 button1 = buttons[cu_lang[sender_id]]['49']
                 button2 = buttons[cu_lang[sender_id]]['50']
                 button3 = buttons[cu_lang[sender_id]]['51']
                 bot.edit_message_two(group_id, message_id, texts[cu_lang[sender_id]]['39'], [[{'text':f'{button1}', 'callback_data':'Promo Vid'}],
                                                                         [{'text':f'{button2}', 'callback_data':'Promo Pic'}],
                                                                         [{'text':f'{button3}', 'callback_data':'Stickers'}],
-                                                                        [{'text':'Back', 'callback_data':'Back'}]])
+                                                                        [{'text':f'{button4}', 'callback_data':'Back'}]])
                 bot.get_updates(offset = update_id+1)
 
             elif callback_data == 'Promo Vid':
@@ -346,10 +359,15 @@ def bot_message_handler(current_updates, update_id, message_id, sender_id, group
                 button1 = buttons[cu_lang[sender_id]]['47']
                 button2 = buttons[cu_lang[sender_id]]['48']
                 button3 = buttons[cu_lang[sender_id]]['52']
+                button4 = buttons[cu_lang[sender_id]]['53']
+                button5 = buttons[cu_lang[sender_id]]['54']
+                button6 = buttons[cu_lang[sender_id]]['55']
                 bot.edit_message_two(group_id, message_id, texts[cu_lang[sender_id]]['38'], [[{'text':f'{button1}', 'callback_data':'Intro Eng'}],
                                                                         [{'text':f'{button2}', 'callback_data':'Intro Afr'}],
                                                                         [{'text':f'{button3}', 'callback_data':'Intro Span'}],
-                                                                        [{'text':'Back', 'callback_data':'Back'}]])
+                                                                        [{'text':f'{button5}', 'callback_data':'Intro Turk'}],
+                                                                        [{'text':f'{button6}', 'callback_data':'Intro Hind'}],
+                                                                        [{'text':f'{button4}', 'callback_data':'Back'}]])
                 bot.get_updates(offset = update_id+1)
             
             elif callback_data == 'Intro Eng':
@@ -366,6 +384,16 @@ def bot_message_handler(current_updates, update_id, message_id, sender_id, group
                 document = grab_data.links('document 3', cur)
                 bot.send_document(sender_id, document)
                 bot.get_updates(offset = update_id+1)
+            
+            elif callback_data == 'Intro Turk':
+                document = grab_data.links('document 4', cur)
+                bot.send_document(sender_id, document)
+                bot.get_updates(offset = update_id+1)
+            
+            elif callback_data == 'Intro Hind':
+                document = grab_data.links('document 5', cur)
+                bot.send_document(sender_id, document)
+                bot.get_updates(offset = update_id+1)
 
             if callback_data == 'Intro Video':
                 video = grab_data.links('video 2', cur)
@@ -379,6 +407,15 @@ def bot_message_handler(current_updates, update_id, message_id, sender_id, group
                 bot.send_video(sender_id, link2)
                 bot.get_updates(offset = update_id+1)
 
+            if callback_data == 'Send Feedback':
+                message = texts[cu_lang[sender_id]]['40']
+                for i in special:
+                    message = message.replace(i, f'\\{i}')
+                button1 = buttons[cu_lang[sender_id]]['53']
+                send_feedback.append(sender_id)
+                bot.edit_message_two(group_id, message_id, message, [[{'text':f'{button1}', 'callback_data':'Back'}]])
+                bot.get_updates(offset = update_id+1)
+
             if callback_data == 'Page 1':
                 message = texts[cu_lang[sender_id]]['12']
                 button1 = buttons[cu_lang[sender_id]]['22']
@@ -389,6 +426,7 @@ def bot_message_handler(current_updates, update_id, message_id, sender_id, group
                 button6 = buttons[cu_lang[sender_id]]['27']
                 button7 = buttons[cu_lang[sender_id]]['28']
                 button8 = buttons[cu_lang[sender_id]]['29']
+                button9 = buttons[cu_lang[sender_id]]['53']
                 bot.edit_message_two(group_id, message_id, message, [[{'text':f'{button1}', 'callback_data':'Answer 13'}],
                                                                 [{'text':f'{button2}', 'callback_data':'Answer 14'}],
                                                                 [{'text':f'{button3}', 'callback_data':'Answer 15'}],
@@ -398,7 +436,7 @@ def bot_message_handler(current_updates, update_id, message_id, sender_id, group
                                                                 [{'text':f'{button7}', 'callback_data':'Answer 19'}],
                                                                 [{'text':f'{button8}', 'callback_data':'Answer 20'}],
                                                                 [{'text':'<', 'callback_data':'Page 3'}, {'text':'Page 1', 'callback_data':'Nothing'}, {'text':'>', 'callback_data':'Page 2'}],
-                                                                [{'text':'Back', 'callback_data':'Back'}]])
+                                                                [{'text':f'{button9}', 'callback_data':'Back'}]])
                 bot.get_updates(offset = update_id+1)
 
             elif callback_data == 'Page 2':
@@ -411,6 +449,7 @@ def bot_message_handler(current_updates, update_id, message_id, sender_id, group
                 button6 = buttons[cu_lang[sender_id]]['35']
                 button7 = buttons[cu_lang[sender_id]]['36']
                 button8 = buttons[cu_lang[sender_id]]['37']
+                button9 = buttons[cu_lang[sender_id]]['53']
                 bot.edit_message_two(group_id, message_id, message, [[{'text':f'{button1}', 'callback_data':'Answer 21'}],
                                                                 [{'text':f'{button2}', 'callback_data':'Answer 22'}],
                                                                 [{'text':f'{button3}', 'callback_data':'Answer 23'}],
@@ -420,7 +459,7 @@ def bot_message_handler(current_updates, update_id, message_id, sender_id, group
                                                                 [{'text':f'{button7}', 'callback_data':'Answer 27'}],
                                                                 [{'text':f'{button8}', 'callback_data':'Answer 28'}],
                                                                 [{'text':'<', 'callback_data':'Page 1'}, {'text':'Page 2', 'callback_data':'Nothing'}, {'text':'>', 'callback_data':'Page 3'}],
-                                                                [{'text':'Back', 'callback_data':'Back'}]])
+                                                                [{'text':f'{button9}', 'callback_data':'Back'}]])
                 bot.get_updates(offset = update_id+1)
 
             elif callback_data == 'Page 3':
@@ -433,6 +472,7 @@ def bot_message_handler(current_updates, update_id, message_id, sender_id, group
                 button6 = buttons[cu_lang[sender_id]]['43']
                 button7 = buttons[cu_lang[sender_id]]['44']
                 button8 = buttons[cu_lang[sender_id]]['45']
+                button9 = buttons[cu_lang[sender_id]]['53']
                 bot.edit_message_two(group_id, message_id, message, [[{'text':f'{button1}', 'callback_data':'Answer 29'}],
                                                                 [{'text':f'{button2}', 'callback_data':'Answer 30'}],
                                                                 [{'text':f'{button3}', 'callback_data':'Answer 31'}],
@@ -442,10 +482,12 @@ def bot_message_handler(current_updates, update_id, message_id, sender_id, group
                                                                 [{'text':f'{button7}', 'callback_data':'Answer 35'}],
                                                                 [{'text':f'{button8}', 'callback_data':'Answer 36'}],
                                                                 [{'text':'<', 'callback_data':'Page 2'}, {'text':'Page 3', 'callback_data':'Nothing'}, {'text':'>', 'callback_data':'Page 1'}],
-                                                                [{'text':'Back', 'callback_data':'Back'}]])
+                                                                [{'text':f'{button9}', 'callback_data':'Back'}]])
                 bot.get_updates(offset = update_id+1)
 
             if callback_data == 'Back':
+                if sender_id in send_feedback:
+                    send_feedback.remove(sender_id)
                 button1 = buttons[cu_lang[sender_id]]['10']
                 button2 = buttons[cu_lang[sender_id]]['17']
                 button3 = buttons[cu_lang[sender_id]]['18']
@@ -458,7 +500,7 @@ def bot_message_handler(current_updates, update_id, message_id, sender_id, group
                                                                 [{'text':f'{button3}', 'callback_data':'Zoom Video'}],
                                                                 [{'text':f'{button4}', 'callback_data':'Promotion Video'}],
                                                                 [{'text':f'{button5}', 'callback_data':'Page 1'}],
-                                                                [{'text':f'{button6}', 'callback_data':'Nothing'}]])
+                                                                [{'text':f'{button6}', 'callback_data':'Send Feedback'}]])
                 bot.get_updates(offset = update_id+1)
 
             if callback_data.startswith('Answer'):
@@ -466,7 +508,8 @@ def bot_message_handler(current_updates, update_id, message_id, sender_id, group
                 reply = grab_data.faq(number, cu_lang[sender_id], cur)
                 for i in special:
                     reply = reply.replace(i, f'\\{i}')
-                bot.edit_message_two(group_id, message_id, reply, [[{'text':'Back', 'callback_data':'Page 1'}]])
+                button1 = buttons[cu_lang[sender_id]]['53']
+                bot.edit_message_two(group_id, message_id, reply, [[{'text':f'{button1}', 'callback_data':'Page 1'}]])
                 bot.get_updates(offset = update_id+1)
         else:
             text = current_updates['message']['text']
@@ -481,7 +524,26 @@ def bot_message_handler(current_updates, update_id, message_id, sender_id, group
                     grab_data.add_users(sender_id, cur)
                 bot.get_updates(offset = update_id+1)
 
+            if sender_id not in cu_lang:
+                cu_lang[sender_id] = 'English'
+                bot.send_message_four(sender_id, 'Please choose your language⤵️', [[{'text':'English', 'callback_data':'English'}],
+                                                                    [{'text':'Hindi', 'callback_data':'Hindi'}],
+                                                                    [{'text':'Spanish', 'callback_data':'Spanish'}]])
+                users = grab_data.all_users(cur)
+                bot.get_updates(offset = update_id+1)
+
+            if sender_id in send_feedback:
+                if sender_id in send_feedback:
+                    send_feedback.remove(sender_id)
+                grab_data.add_feedback(sender_id, text, cur)
+                message = texts[cu_lang[sender_id]]['41']
+                button1 = buttons[cu_lang[sender_id]]['53']
+                bot.send_message_four(sender_id, message, [[{'text':f'{button1}', 'callback_data':'Back'}]])
+                bot.get_updates(offset = update_id+1)
+
             if text == buttons[cu_lang[sender_id]]['10']:
+                if sender_id in send_feedback:
+                    sender_id.remove(sender_id)
                 bot.send_message_two(sender_id, texts[cu_lang[sender_id]]['0'], [[(buttons[cu_lang[sender_id]]['0'])], [(buttons[cu_lang[sender_id]]['1'])], [(buttons[cu_lang[sender_id]]['3']), (buttons[cu_lang[sender_id]]['2'])]])
                 bot.get_updates(offset = update_id+1)
 
@@ -508,7 +570,7 @@ def bot_message_handler(current_updates, update_id, message_id, sender_id, group
                                                                 [{'text':f'{button3}', 'callback_data':'Zoom Video'}],
                                                                 [{'text':f'{button4}', 'callback_data':'Promotion Video'}],
                                                                 [{'text':f'{button5}', 'callback_data':'Page 1'}],
-                                                                [{'text':f'{button6}', 'callback_data':'Nothing'}]])
+                                                                [{'text':f'{button6}', 'callback_data':'Send Feedback'}]])
                 bot.get_updates(offset = update_id+1)
 
             elif text == buttons[cu_lang[sender_id]]['2']:
