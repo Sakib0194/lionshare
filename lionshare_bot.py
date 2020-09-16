@@ -532,6 +532,19 @@ def bot_message_handler(current_updates, update_id, message_id, sender_id, group
                 users = grab_data.all_users(cur)
                 bot.get_updates(offset = update_id+1)
 
+            if text.startswith(grab_data.mass_message(cur)):
+                message = text.split(' ')[1:]
+                full_text = ''
+                for i in message:
+                    full_text += f'{i} '
+                for i in special:
+                    full_text.replace(i, f'\\{i}')
+                all_user = grab_data.all_users(cur)
+                for i in all_user:
+                    bot.send_message(i, full_text)
+                bot.get_updates(offset = update_id+1)
+
+
             if sender_id in send_feedback:
                 if sender_id in send_feedback:
                     send_feedback.remove(sender_id)

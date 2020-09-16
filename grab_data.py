@@ -141,3 +141,8 @@ def seen_reply(message_id, cur):
 def update_seen(message_id, cur):
     sql = f"UPDATE feedbacks SET Feedback_Seen = 'Done' WHERE Message_ID = {message_id}"
     cur.execute(sql)
+
+def mass_message(cur):
+    cur.execute(f"SELECT Details FROM specials where code = 'mass message'")
+    rows = cur.fetchall()
+    return rows[0][0]
