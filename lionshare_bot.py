@@ -115,7 +115,7 @@ details = sys.argv[1:]
 conn = mysql.connector.connect(host=details[0],user=details[1],database=details[2],password=details[3], autocommit=True)
 cur = conn.cursor()
 
-token = grab_data.api(cur)
+token = '1140389723:AAFqDnpHV2Ia4BH8DDKO4_WN53sCqquhRGQ'
 offset = 0
 
 cu_lang = {}
@@ -550,6 +550,11 @@ def bot_message_handler(current_updates, update_id, message_id, sender_id, group
                     bot.send_message(i, full_text)
                 bot.get_updates(offset = update_id+1)
 
+            if text == buttons[cu_lang[sender_id]]['10']:
+                if sender_id in send_feedback:
+                    sender_id.remove(sender_id)
+                bot.send_message_two(sender_id, texts[cu_lang[sender_id]]['0'], [[(buttons[cu_lang[sender_id]]['0'])], [(buttons[cu_lang[sender_id]]['1'])], [(buttons[cu_lang[sender_id]]['3']), (buttons[cu_lang[sender_id]]['2'])]])
+                bot.get_updates(offset = update_id+1)
 
             if sender_id in send_feedback:
                 if sender_id in send_feedback:
@@ -558,12 +563,6 @@ def bot_message_handler(current_updates, update_id, message_id, sender_id, group
                 message = texts[cu_lang[sender_id]]['41']
                 button1 = buttons[cu_lang[sender_id]]['53']
                 bot.send_message_four(sender_id, message, [[{'text':f'{button1}', 'callback_data':'Back'}]])
-                bot.get_updates(offset = update_id+1)
-
-            if text == buttons[cu_lang[sender_id]]['10']:
-                if sender_id in send_feedback:
-                    sender_id.remove(sender_id)
-                bot.send_message_two(sender_id, texts[cu_lang[sender_id]]['0'], [[(buttons[cu_lang[sender_id]]['0'])], [(buttons[cu_lang[sender_id]]['1'])], [(buttons[cu_lang[sender_id]]['3']), (buttons[cu_lang[sender_id]]['2'])]])
                 bot.get_updates(offset = update_id+1)
 
             if text == buttons[cu_lang[sender_id]]['0']:
