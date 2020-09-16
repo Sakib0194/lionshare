@@ -20,7 +20,7 @@ class BoilerPlate:
         fieldss = {'chat_id': chat_id, 'text': text, 'parse_mode': 'MarkdownV2', 'disable_web_page_preview':disable_web_page_preview}
         function = 'sendMessage'
         send = requests.post(self.api_url + function, fieldss)
-        print(send.json())
+        #print(send.json())
         return send
     def send_message_two(self, chat_id, text, reply_markup, one_time_keyboard=False, resize_keyboard=True, disable_web_page_preview=True):         #FOR SENDING MESSAGE WITH KEYBOARD INCLUDED
         reply_markup = json.dumps({'keyboard': reply_markup, 'one_time_keyboard': one_time_keyboard, 'resize_keyboard': resize_keyboard, 'disable_web_page_preview':disable_web_page_preview})
@@ -103,9 +103,9 @@ class BoilerPlate:
         send = requests.post(self.api_url + function, fieldss)
         return send
 
-    def edit_message_two (self, chat_id, message_id, text, reply_markup, disable_web_page_preview=True):
+    def edit_message_two (self, chat_id, message_id, text, reply_markup, disable_web_page_preview=True, parse_mode='MarkdownV2'):
         reply_markup = json.dumps({'inline_keyboard': reply_markup})
-        fieldss = {'chat_id': chat_id, 'message_id': message_id, 'text': text, 'parse_mode':'MarkdownV2', 'reply_markup':reply_markup, 'disable_web_page_preview':disable_web_page_preview}
+        fieldss = {'chat_id': chat_id, 'message_id': message_id, 'text': text, 'parse_mode':parse_mode, 'reply_markup':reply_markup, 'disable_web_page_preview':disable_web_page_preview}
         function = 'editMessageText'
         send = requests.post(self.api_url + function, fieldss)
         #print(send.json())
@@ -213,7 +213,7 @@ def bot_message_handler(current_updates, update_id, message_id, sender_id, group
 
             elif callback_data == 'Promo Vid':
                 all_links = []
-                for i in range(3,11):
+                for i in range(3,12):
                     video = grab_data.links(f'video {i}', cur)
                     all_links.append(video[0])
                 for i in all_links:
@@ -506,10 +506,16 @@ def bot_message_handler(current_updates, update_id, message_id, sender_id, group
             if callback_data.startswith('Answer'):
                 number = callback_data.split(' ')[1]
                 reply = grab_data.faq(number, cu_lang[sender_id], cur)
-                for i in special:
-                    reply = reply.replace(i, f'\\{i}')
+                if callback_data == 'Answer 20':
+                    pass
+                else:
+                    for i in special:
+                        reply = reply.replace(i, f'\\{i}')
                 button1 = buttons[cu_lang[sender_id]]['53']
-                bot.edit_message_two(group_id, message_id, reply, [[{'text':f'{button1}', 'callback_data':'Page 1'}]])
+                if callback_data == 'Answer 20':
+                    bot.edit_message_two(group_id, message_id, reply, [[{'text':f'{button1}', 'callback_data':'Page 1'}]], parse_mode='HTML')
+                else:
+                    bot.edit_message_two(group_id, message_id, reply, [[{'text':f'{button1}', 'callback_data':'Page 1'}]])
                 bot.get_updates(offset = update_id+1)
         else:
             text = current_updates['message']['text']
