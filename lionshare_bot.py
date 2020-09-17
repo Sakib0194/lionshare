@@ -115,7 +115,7 @@ details = sys.argv[1:]
 conn = mysql.connector.connect(host=details[0],user=details[1],database=details[2],password=details[3], autocommit=True)
 cur = conn.cursor()
 
-token = grab_data.api(cur)
+token = '1140389723:AAFqDnpHV2Ia4BH8DDKO4_WN53sCqquhRGQ'
 offset = 0
 
 cu_lang = {}
@@ -340,7 +340,7 @@ def bot_message_handler(current_updates, update_id, message_id, sender_id, group
                 photo = grab_data.links('photo 3', cur)
                 bot.send_photo(sender_id, photo)
                 bot.send_message_four(sender_id, (texts[cu_lang[sender_id]]['5']), [[{'text':f'{button1}', 'callback_data':'Create Tronlink'}],
-                                                                [{'text':f'{button2}', 'callback_data':'Topping Up'}],
+                                                                [{'text':f'{button2}', 'callback_data':'Topping Up PC'}],
                                                                 [{'text':f'{button3}', 'callback_data':'Complete Regi PC'}]])
                 bot.get_updates(offset = update_id+1)
             
@@ -352,8 +352,22 @@ def bot_message_handler(current_updates, update_id, message_id, sender_id, group
                 button2 = buttons[cu_lang[sender_id]]['16']
                 button3 = buttons[cu_lang[sender_id]]['13']
                 bot.edit_message_two(group_id, message_id, message, [[{'text':f'{button1}', 'callback_data':'Create Tronlink'}],
-                                                                [{'text':f'{button2}', 'callback_data':'Topping Up'}],
+                                                                [{'text':f'{button2}', 'callback_data':'Topping Up PC'}],
                                                                 [{'text':f'{button3}', 'callback_data':'Complete Regi PC'}]])
+                bot.get_updates(offset = update_id+1)
+
+            elif callback_data == 'Topping Up PC':
+                message = texts[cu_lang[sender_id]]['4']
+                for i in special:
+                    message = message.replace(i, f'\\{i}')
+                button1 = buttons[cu_lang[sender_id]]['15']
+                button2 = buttons[cu_lang[sender_id]]['16']
+                button3 = buttons[cu_lang[sender_id]]['13']
+                video = grab_data.links('video 1', cur)
+                bot.send_video(sender_id, video)
+                bot.send_message_four(sender_id, message, [[{'text':f'{button1}', 'callback_data':'Create Tronlink'}],
+                                                            [{'text':f'{button2}', 'callback_data':'Topping Up PC'}],
+                                                            [{'text':f'{button3}', 'callback_data':'Complete Regi PC'}]])
                 bot.get_updates(offset = update_id+1)
 
             if callback_data == 'Introduction':
