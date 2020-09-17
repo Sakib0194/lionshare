@@ -341,7 +341,7 @@ def bot_message_handler(current_updates, update_id, message_id, sender_id, group
                 bot.send_photo(sender_id, photo)
                 bot.send_message_four(sender_id, (texts[cu_lang[sender_id]]['5']), [[{'text':f'{button1}', 'callback_data':'Create Tronlink'}],
                                                                 [{'text':f'{button2}', 'callback_data':'Topping Up'}],
-                                                                [{'text':f'{button3}', 'callback_data':'Complete Regi'}]])
+                                                                [{'text':f'{button3}', 'callback_data':'Complete Regi PC'}]])
                 bot.get_updates(offset = update_id+1)
             
             elif callback_data == 'Create Tronlink':
