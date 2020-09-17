@@ -504,19 +504,23 @@ def bot_message_handler(current_updates, update_id, message_id, sender_id, group
                                                                 [{'text':f'{button6}', 'callback_data':'Send Feedback'}]])
                 bot.get_updates(offset = update_id+1)
 
-            if callback_data.startswith('Answer'):
+            if callback_data == 'Answer 20':
+                button1 = buttons[cu_lang[sender_id]]['53']
+                reply = grab_data.faq('20', cu_lang[sender_id], cur)
+                for i in special:
+                    reply = reply.replace(i, f'\\{i}')
+                bot.edit_message_two(group_id, message_id, reply, [[{'text':'TELEGRAM CHAT 👤', 'url':'https://t.me/lionssharetron_official'}],
+                                                                [{'text':'TELEGRAM CHANNEL 📢', 'url':'https://t.me/lionsharetron_official'}],
+                                                                [{'text':f'{button1}', 'callback_data':'Page 1'}]], parse_mode='HTML')
+                bot.get_updates(offset = update_id+1)
+
+            elif callback_data.startswith('Answer') and callback_data != 'Answer 20':
                 number = callback_data.split(' ')[1]
                 reply = grab_data.faq(number, cu_lang[sender_id], cur)
-                if callback_data == 'Answer 20':
-                    pass
-                else:
-                    for i in special:
-                        reply = reply.replace(i, f'\\{i}')
+                for i in special:
+                    reply = reply.replace(i, f'\\{i}')
                 button1 = buttons[cu_lang[sender_id]]['53']
-                if callback_data == 'Answer 20':
-                    bot.edit_message_two(group_id, message_id, reply, [[{'text':f'{button1}', 'callback_data':'Page 1'}]], parse_mode='HTML')
-                else:
-                    bot.edit_message_two(group_id, message_id, reply, [[{'text':f'{button1}', 'callback_data':'Page 1'}]])
+                bot.edit_message_two(group_id, message_id, reply, [[{'text':f'{button1}', 'callback_data':'Page 1'}]])
                 bot.get_updates(offset = update_id+1)
         else:
             text = current_updates['message']['text']
