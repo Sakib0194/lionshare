@@ -523,9 +523,9 @@ def bot_message_handler(current_updates, update_id, message_id, sender_id, group
             print(text)
             if text == '/start' or text == 'start':
                 cu_lang[sender_id] = 'English'
-                bot.send_message_four(sender_id, 'Please choose your language⤵️', [[{'text':'English', 'callback_data':'English'}],
-                                                                    [{'text':'Hindi', 'callback_data':'Hindi'}],
-                                                                    [{'text':'Spanish', 'callback_data':'Spanish'}]])
+                bot.send_message_four(sender_id, 'Please choose your language⤵️', [[{'text':'ENGLISH🇬🇧', 'callback_data':'English'}],
+                                                                    [{'text':'हिन्दी🇮🇳', 'callback_data':'Hindi'}],
+                                                                    [{'text':'ESPAÑOL🇪🇸', 'callback_data':'Spanish'}]])
                 users = grab_data.all_users(cur)
                 if sender_id not in users:
                     grab_data.add_users(sender_id, cur)
@@ -533,9 +533,9 @@ def bot_message_handler(current_updates, update_id, message_id, sender_id, group
 
             if sender_id not in cu_lang:
                 cu_lang[sender_id] = 'English'
-                bot.send_message_four(sender_id, 'Please choose your language⤵️', [[{'text':'English', 'callback_data':'English'}],
-                                                                    [{'text':'Hindi', 'callback_data':'Hindi'}],
-                                                                    [{'text':'Spanish', 'callback_data':'Spanish'}]])
+                bot.send_message_four(sender_id, 'Please choose your language⤵️', [[{'text':'ENGLISH🇬🇧', 'callback_data':'English'}],
+                                                                    [{'text':'हिन्दी🇮🇳', 'callback_data':'Hindi'}],
+                                                                    [{'text':'ESPAÑOL🇪🇸', 'callback_data':'Spanish'}]])
                 users = grab_data.all_users(cur)
                 bot.get_updates(offset = update_id+1)
 
@@ -594,9 +594,9 @@ def bot_message_handler(current_updates, update_id, message_id, sender_id, group
 
             elif text == buttons[cu_lang[sender_id]]['2']:
                 bot.send_message_three(sender_id, 'Change Language', remove_keyboard=True)
-                bot.send_message_four(sender_id, 'Select a Language', [[{'text':'English', 'callback_data':'English'}],
-                                                                    [{'text':'Hindi', 'callback_data':'Hindi'}],
-                                                                    [{'text':'Spanish', 'callback_data':'Spanish'}]])
+                bot.send_message_four(sender_id, 'Select a Language', [[{'text':'ENGLISH🇬🇧', 'callback_data':'English'}],
+                                                                    [{'text':'हिन्दी🇮🇳', 'callback_data':'Hindi'}],
+                                                                    [{'text':'ESPAÑOL🇪🇸', 'callback_data':'Spanish'}]])
                 bot.get_updates(offset = update_id+1)
 
             elif text == buttons[cu_lang[sender_id]]['3']:
