@@ -189,6 +189,7 @@ def starter():
 
 def bot_message_handler(current_updates, update_id, message_id, sender_id, group_id, dict_checker, cur, callback_data=0, callback=False):
     global cu_lang
+    print(send_feedback)
     try:
         if callback == True:
             print(callback_data)
@@ -552,11 +553,11 @@ def bot_message_handler(current_updates, update_id, message_id, sender_id, group
 
             if text == buttons[cu_lang[sender_id]]['10']:
                 if sender_id in send_feedback:
-                    sender_id.remove(sender_id)
+                    send_feedback.remove(sender_id)
                 bot.send_message_two(sender_id, texts[cu_lang[sender_id]]['0'], [[(buttons[cu_lang[sender_id]]['0'])], [(buttons[cu_lang[sender_id]]['1'])], [(buttons[cu_lang[sender_id]]['3']), (buttons[cu_lang[sender_id]]['2'])]])
                 bot.get_updates(offset = update_id+1)
 
-            if sender_id in send_feedback:
+            elif sender_id in send_feedback:
                 if sender_id in send_feedback:
                     send_feedback.remove(sender_id)
                 grab_data.add_feedback(sender_id, text, cur)
