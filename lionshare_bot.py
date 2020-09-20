@@ -115,7 +115,7 @@ details = sys.argv[1:]
 conn = mysql.connector.connect(host=details[0],user=details[1],database=details[2],password=details[3], autocommit=True)
 cur = conn.cursor()
 
-token = '1140389723:AAFqDnpHV2Ia4BH8DDKO4_WN53sCqquhRGQ'
+token = grab_data.api(cur)
 offset = 0
 
 cu_lang = {}
