@@ -87,7 +87,7 @@ def feed_details(message, cur):
     return unique[0]
 
 def feedback_reply(message_id, message, cur):
-    sql = f"UPDATE feedbacks SET Reply_Message = '{message}' WHERE Message_ID = {message_id}"
+    sql = f"""UPDATE feedbacks SET Reply_Message = "{message}" WHERE Message_ID = {message_id}"""
     cur.execute(sql)
     sql = f"UPDATE feedbacks SET Feedback_Sent = 'Yes' WHERE Message_ID = {message_id}"
     cur.execute(sql)

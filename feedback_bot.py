@@ -119,7 +119,7 @@ token = grab_data.api_two(cur)
 offset = 0
 
 logged_in = []
-special = ['@', '=', '.', '>', '-', '(', ')','!']
+special = ['[', ']', '(', ')', '~', '`', '>', '#', '+', '-', '=', '|', '{', '}', '.', '!']
 
 bot = BoilerPlate(token)
 
@@ -247,9 +247,11 @@ def bot_message_handler(current_updates, update_id, message_id, sender_id, group
             if text.split(' ')[0].isnumeric():
                 message_id = text.split(' ')[0]
                 message = text.split(' ')[1:]
-                full_text = ''
+                full_text = ""
                 for i in message:
-                    full_text += f'{i} '
+                    full_text += f"{i} "
+                for i in special:
+                    full_text = full_text.replace(i, f'\\{i}')
                 grab_data.feedback_reply(message_id, full_text, cur)
                 bot.send_message(sender_id, 'Feedback Reply Sent')
                 bot.get_updates(offset = update_id+1)
