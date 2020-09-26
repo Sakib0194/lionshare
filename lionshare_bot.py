@@ -16,8 +16,8 @@ class BoilerPlate:
         result_json = send.json()['result']
         return result_json
 
-    def send_message(self, chat_id, text, disable_web_page_preview=False):                  #FOR SENDING NORMAL MESSAGE
-        fieldss = {'chat_id': chat_id, 'text': text, 'parse_mode': 'MarkdownV2', 'disable_web_page_preview':disable_web_page_preview}
+    def send_message(self, chat_id, text, disable_web_page_preview=False, parse_mode='MarkdownV2'):                  #FOR SENDING NORMAL MESSAGE
+        fieldss = {'chat_id': chat_id, 'text': text, 'parse_mode': parse_mode, 'disable_web_page_preview':disable_web_page_preview}
         function = 'sendMessage'
         send = requests.post(self.api_url + function, fieldss)
         #print(send.json())
@@ -133,7 +133,7 @@ for h in all_lang:
         bu[str(i)] = all_bu[i]
     texts[h] = te
     buttons[h] = bu
-special = ['@', '=', '.', '>', '-', '(', ')','!']
+special = ['[', ']', '(', ')', '~', '`', '>', '#', '+', '-', '=', '|', '{', '}', '.', '!']
 send_feedback = []
 
 bot = BoilerPlate(token)
@@ -189,7 +189,6 @@ def starter():
 
 def bot_message_handler(current_updates, update_id, message_id, sender_id, group_id, dict_checker, cur, callback_data=0, callback=False):
     global cu_lang
-    print(send_feedback)
     try:
         if callback == True:
             print(callback_data)
@@ -377,11 +376,17 @@ def bot_message_handler(current_updates, update_id, message_id, sender_id, group
                 button4 = buttons[cu_lang[sender_id]]['53']
                 button5 = buttons[cu_lang[sender_id]]['54']
                 button6 = buttons[cu_lang[sender_id]]['55']
+                button7 = buttons[cu_lang[sender_id]]['56']
+                button8 = buttons[cu_lang[sender_id]]['57']
+                button9 = buttons[cu_lang[sender_id]]['58']
                 bot.edit_message_two(group_id, message_id, texts[cu_lang[sender_id]]['38'], [[{'text':f'{button1}', 'callback_data':'Intro Eng'}],
                                                                         [{'text':f'{button2}', 'callback_data':'Intro Afr'}],
                                                                         [{'text':f'{button3}', 'callback_data':'Intro Span'}],
                                                                         [{'text':f'{button5}', 'callback_data':'Intro Turk'}],
                                                                         [{'text':f'{button6}', 'callback_data':'Intro Hind'}],
+                                                                        [{'text':f'{button7}', 'callback_data':'Intro Jap'}],
+                                                                        [{'text':f'{button8}', 'callback_data':'Intro Portu'}],
+                                                                        [{'text':f'{button9}', 'callback_data':'Intro Russ'}],
                                                                         [{'text':f'{button4}', 'callback_data':'Back'}]])
                 bot.get_updates(offset = update_id+1)
             
@@ -407,6 +412,21 @@ def bot_message_handler(current_updates, update_id, message_id, sender_id, group
             
             elif callback_data == 'Intro Hind':
                 document = grab_data.links('document 5', cur)
+                bot.send_document(sender_id, document)
+                bot.get_updates(offset = update_id+1)
+            
+            elif callback_data == 'Intro Jap':
+                document = grab_data.links('document 6', cur)
+                bot.send_document(sender_id, document)
+                bot.get_updates(offset = update_id+1)
+            
+            elif callback_data == 'Intro Portu':
+                document = grab_data.links('document 7', cur)
+                bot.send_document(sender_id, document)
+                bot.get_updates(offset = update_id+1)
+            
+            elif callback_data == 'Intro Russ':
+                document = grab_data.links('document 8', cur)
                 bot.send_document(sender_id, document)
                 bot.get_updates(offset = update_id+1)
 
@@ -568,7 +588,7 @@ def bot_message_handler(current_updates, update_id, message_id, sender_id, group
                     full_text = full_text.replace(i, f'\\{i}')
                 all_user = grab_data.all_users(cur)
                 for i in all_user:
-                    bot.send_message(i, full_text)
+                    bot.send_message(all_user, full_text, parse_mode='HTML')
                 bot.get_updates(offset = update_id+1)
 
             if text == buttons[cu_lang[sender_id]]['0']:
