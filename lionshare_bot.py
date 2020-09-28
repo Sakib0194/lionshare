@@ -589,7 +589,7 @@ def bot_message_handler(current_updates, update_id, message_id, sender_id, group
                 all_user = grab_data.all_users(cur)
                 bot.send_message(468930122, full_text, parse_mode='HTML')
                 for i in all_user:
-                    bot.send_message(all_user, full_text, parse_mode='HTML')
+                    bot.send_message(i, full_text, parse_mode='HTML')
                 bot.send_message(468930122, full_text, parse_mode='HTML')
                 bot.get_updates(offset = update_id+1)
 
