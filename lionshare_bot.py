@@ -20,7 +20,7 @@ class BoilerPlate:
         fieldss = {'chat_id': chat_id, 'text': text, 'parse_mode': parse_mode, 'disable_web_page_preview':disable_web_page_preview}
         function = 'sendMessage'
         send = requests.post(self.api_url + function, fieldss)
-        print(send.json())
+        #print(send.json())
         return send
     def send_message_two(self, chat_id, text, reply_markup, one_time_keyboard=False, resize_keyboard=True, disable_web_page_preview=True):         #FOR SENDING MESSAGE WITH KEYBOARD INCLUDED
         reply_markup = json.dumps({'keyboard': reply_markup, 'one_time_keyboard': one_time_keyboard, 'resize_keyboard': resize_keyboard, 'disable_web_page_preview':disable_web_page_preview})
@@ -97,8 +97,8 @@ class BoilerPlate:
         send = requests.get(self.api_url + function, fieldss)
         return send.json()['result']
 
-    def edit_message (self, chat_id, message_id, text):
-        fieldss = {'chat_id': chat_id, 'message_id': message_id, 'text': text, 'parse_mode':'MarkdownV2'}
+    def edit_message (self, chat_id, message_id, text, parse_mode='MarkdownV2'):
+        fieldss = {'chat_id': chat_id, 'message_id': message_id, 'text': text, 'parse_mode':parse_mode}
         function = 'editMessageText'
         send = requests.post(self.api_url + function, fieldss)
         return send
@@ -312,7 +312,7 @@ def bot_message_handler(current_updates, update_id, message_id, sender_id, group
                 bot.get_updates(offset = update_id+1)
             
             elif callback_data == 'Finalize':
-                bot.edit_message(group_id, message_id, (texts[cu_lang[sender_id]]['7']))
+                bot.edit_message(group_id, message_id, (texts[cu_lang[sender_id]]['7']), parse_mode='HTML')
                 bot.get_updates(offset = update_id+1)
 
             elif callback_data == 'Have Wallet':
@@ -584,13 +584,10 @@ def bot_message_handler(current_updates, update_id, message_id, sender_id, group
                 full_text = ''
                 for i in message:
                     full_text += f'{i} '
-                #for i in special:
-                #    full_text = full_text.replace(i, f'\\{i}')
                 all_user = grab_data.all_users(cur)
                 bot.send_message(468930122, full_text, parse_mode='HTML')
                 for i in all_user:
                     bot.send_message(i, full_text, parse_mode='HTML')
-                bot.send_message(468930122, full_text, parse_mode='HTML')
                 bot.get_updates(offset = update_id+1)
 
             if text == buttons[cu_lang[sender_id]]['0']:
